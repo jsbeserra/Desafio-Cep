@@ -11,8 +11,10 @@ import { Drive } from '../src/core/drive';
 import { gatewayMock } from './mocks/gateway-mock';
 import { ZipCodeService } from '../src/core/zip-code-service';
 import { ZipCodeFavoritedError } from '../src/core/errors/zip-codes-favorite';
+import { ZipCodeNotFound } from '../src/core/errors/zip-code-not-found';
+import { ZipCodeNotUpdated } from '../src/core/errors/zip-codes-not-updated';
 
-describe('', () => {
+describe('ZipCodeService', () => {
   let app: INestApplication<App>;
   let mongoDb: MongoMemoryServer;
   let mongoUri: string;
@@ -71,9 +73,18 @@ describe('', () => {
   it('Should fail to update if no records are found', async () => {
     const gateway = jest.spyOn(cepGateway, 'find');
     gateway.mockResolvedValueOnce(gatewayMock);
+    const input = {
+      zipcode: 'TESTE',
+      street: 'Rua Do Teste',
+      neighborhood: 'Bairro Do Teste',
+    };
     await expect(
-      sut.update('TESTE', 'Rua Do Teste', 'Bairro Do Teste'),
-    ).rejects.toThrow(BadRequestException);
+      sut.update(input.zipcode, input.street, input.neighborhood),
+    ).rejects.toThrow(
+      new BadRequestException(
+        new ZipCodeNotUpdated(input.zipcode, input.street, input.neighborhood),
+      ),
+    );
   });
 
   it('Should update the neighborhood and street of a zip code', async () => {
@@ -108,7 +119,10 @@ describe('', () => {
   });
 
   it('Should fail return zipcode if not exists in the database', async () => {
-    await expect(sut.find('1234')).rejects.toThrow(BadRequestException);
+    const zipcode = '1234';
+    await expect(sut.find(zipcode)).rejects.toThrow(
+      new BadRequestException(new ZipCodeNotFound(zipcode)),
+    );
   });
 
   it('Should favorite a zip code', async () => {
