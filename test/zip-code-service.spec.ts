@@ -74,7 +74,7 @@ describe('ZipCodeService', () => {
     const gateway = jest.spyOn(cepGateway, 'find');
     gateway.mockResolvedValueOnce(gatewayMock);
     const input = {
-      zipcode: 'TESTE',
+      zipcode: '12345678',
       street: 'Rua Do Teste',
       neighborhood: 'Bairro Do Teste',
     };
@@ -119,7 +119,7 @@ describe('ZipCodeService', () => {
   });
 
   it('Should fail return zipcode if not exists in the database', async () => {
-    const zipcode = '1234';
+    const zipcode = '12345678';
     await expect(sut.find(zipcode)).rejects.toThrow(
       new BadRequestException(new ZipCodeNotFound(zipcode)),
     );

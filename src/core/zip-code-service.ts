@@ -45,7 +45,11 @@ export class ZipCodeService {
     street: string,
     neighborhood: string,
   ): Promise<void> {
-    const updated = await this.drive.update(zipcode, street, neighborhood);
+    const updated = await this.drive.update(
+      this.isValidZipCode(zipcode),
+      street,
+      neighborhood,
+    );
     if (!updated)
       throw new BadRequestException(
         new ZipCodeNotUpdated(zipcode, street, neighborhood),
@@ -53,13 +57,23 @@ export class ZipCodeService {
   }
 
   async find(zipcode: string): Promise<ZipCode> {
-    const zipCode = await this.drive.find(zipcode);
+    const zipCode = await this.drive.find(this.isValidZipCode(zipcode));
     if (!zipCode) throw new BadRequestException(new ZipCodeNotFound(zipcode));
     return zipCode;
   }
 
   async favorite(zipcode: string, isFavorite: boolean): Promise<void> {
-    const zipCode = await this.drive.favorite(zipcode, isFavorite);
+    const zipCode = await this.drive.favorite(
+      this.isValidZipCode(zipcode),
+      isFavorite,
+    );
     if (!zipCode) throw new BadRequestException(new ZipCodeFavoritedError());
+  }
+
+  private isValidZipCode(zipcode: string) {
+    const cleaned = zipcode.replace(/\D/g, '');
+    if (cleaned.length !== 8)
+      throw new BadRequestException('Invalid zipcode length');
+    return `${cleaned.slice(0, 5)}-${cleaned.slice(5)}`;
   }
 }

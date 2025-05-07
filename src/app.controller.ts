@@ -36,7 +36,7 @@ export class AppController {
   }
 
   @ApiOperation({ summary: 'Update zip code street and neightborhood' })
-  @ApiResponse({ status: 201, description: 'success' })
+  @ApiResponse({ status: 200, description: 'success' })
   @ApiResponse({ status: 400, description: 'ZIP code was not updated' })
   @Put()
   async update(@Body() body: UpdateDto): Promise<void> {
@@ -48,7 +48,7 @@ export class AppController {
   }
 
   @ApiOperation({ summary: 'Favorite or unfavorite a ZIP code' })
-  @ApiResponse({ status: 201, description: 'success' })
+  @ApiResponse({ status: 200, description: 'success' })
   @ApiResponse({ status: 400, description: 'Failed to favorite zipcode' })
   @Patch()
   async favorite(@Body() body: FavoriteDto): Promise<void> {

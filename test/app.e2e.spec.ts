@@ -130,7 +130,7 @@ describe('AppController (e2e)', () => {
     jest.spyOn(cepGateway, 'find').mockResolvedValueOnce(gatewayMock);
     await request(app.getHttpServer()).post('/sync');
     const response = await request(app.getHttpServer()).put('/').send({
-      zipcode: 'TESTE',
+      zipcode: '12345678',
       street: 'Rua Do Teste',
       neighborhood: 'Bairro Do Teste',
     });
@@ -163,7 +163,7 @@ describe('AppController (e2e)', () => {
 
   it('/ (PATH) Should fail to favorite a zip code if none is found in the database', async () => {
     const response = await request(app.getHttpServer()).patch('/').send({
-      zipcode: 'teste',
+      zipcode: '12345678',
       isFavorite: true,
     });
     expect(response.status).toBe(400);
