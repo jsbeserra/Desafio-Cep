@@ -2,8 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Drive } from './drive';
 import { ZipCode } from './zip-code';
 import { CepGateway } from './zip-code-gateway';
-import { ZipCodeNotFound } from './errors/zip-codes-not-found';
+import { ZipCodesNotFound } from './errors/zip-codes-not-found';
 import { ZipCodeNotUpdated } from './errors/zip-codes-not-updated';
+import { ZipCodeNotFound } from './errors/zip-code-not-found';
 
 @Injectable()
 export class ZipCodeService {
@@ -29,7 +30,7 @@ export class ZipCodeService {
     );
     if (addresses.length === 0)
       throw new BadRequestException(
-        new ZipCodeNotFound(
+        new ZipCodesNotFound(
           location.state,
           location.city,
           location.municipality,
@@ -48,5 +49,11 @@ export class ZipCodeService {
       throw new BadRequestException(
         new ZipCodeNotUpdated(zipcode, street, neighborhood),
       );
+  }
+
+  async find(zipcode: string): Promise<ZipCode> {
+    const zipCode = await this.drive.find(zipcode);
+    if (!zipCode) throw new BadRequestException(new ZipCodeNotFound(zipcode));
+    return zipCode;
   }
 }

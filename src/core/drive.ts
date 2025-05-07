@@ -9,4 +9,5 @@ export abstract class Drive {
   ): Promise<boolean>;
   abstract favorite(zipCode: string, isFavority: boolean): Promise<ZipCode>;
   abstract listAll(): Promise<ZipCode[]>;
+  abstract find(zipcode: string): Promise<ZipCode | undefined>;
 }

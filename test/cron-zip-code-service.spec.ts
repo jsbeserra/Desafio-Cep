@@ -82,4 +82,31 @@ describe('', () => {
       sut.update(gatewayMock[1].code, 'Rua Do Teste', 'Bairro Do Teste'),
     ).resolves.toBeUndefined();
   });
+
+  it('Should return zipcode if it exists in the database', async () => {
+    const gateway = jest.spyOn(drive, 'find');
+    const mockedZipCode = {
+      code: gatewayMock[1].code,
+      street: gatewayMock[1].street,
+      complement: gatewayMock[1].complement,
+      unit: gatewayMock[1].unit,
+      neighborhood: gatewayMock[1].neighborhood,
+      city: gatewayMock[1].city,
+      stateCode: gatewayMock[1].stateCode,
+      state: gatewayMock[1].state,
+      region: gatewayMock[1].region,
+      ibgeCode: gatewayMock[1].ibgeCode,
+      giaCode: gatewayMock[1].giaCode,
+      areaCode: gatewayMock[1].areaCode,
+      siafiCode: gatewayMock[1].siafiCode,
+      favorite: gatewayMock[1].favorite,
+    };
+    gateway.mockResolvedValueOnce(mockedZipCode);
+    const result = await sut.find(gatewayMock[1].code);
+    expect(result).toBe(mockedZipCode);
+  });
+
+  it('Should fail return zipcode if not exists in the database', async () => {
+    await expect(sut.find('1234')).rejects.toThrow(BadRequestException);
+  });
 });

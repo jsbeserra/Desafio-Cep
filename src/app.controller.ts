@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ZipCodeService } from './core/zip-code-service';
+import { ZipCode } from './core/zip-code';
 
 @Controller()
 export class AppController {
@@ -8,6 +9,11 @@ export class AppController {
   @Get()
   async list(): Promise<any> {
     return await this.zipCodeService.list();
+  }
+
+  @Get('/:zipcode')
+  async find(@Param('zipcode') zipCode: string): Promise<ZipCode> {
+    return await this.zipCodeService.find(zipCode);
   }
 
   @Post('/sync')

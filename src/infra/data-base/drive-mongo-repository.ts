@@ -12,8 +12,29 @@ export class DriveMongoRepository implements Drive {
     private ZipCodeModel: Model<ZipCodeDocument>,
   ) {}
 
-  async save(addresses: ZipCode[]): Promise<boolean> {
-    const bulkOps = addresses.map((address) => ({
+  async find(zipcode: string): Promise<ZipCode | undefined> {
+    const zipCode = await this.ZipCodeModel.findOne({ zipCode: zipcode });
+    if (!zipCode) return;
+    return {
+      code: zipCode.zipCode,
+      street: zipCode.street,
+      complement: zipCode.complement,
+      unit: zipCode.unit,
+      neighborhood: zipCode.neighborhood,
+      city: zipCode.city,
+      stateCode: zipCode.stateCode,
+      state: zipCode.state,
+      region: zipCode.region,
+      ibgeCode: zipCode.ibgeCode,
+      giaCode: zipCode.giaCode,
+      areaCode: zipCode.areaCode,
+      siafiCode: zipCode.siafiCode,
+      favorite: zipCode.favorite,
+    };
+  }
+
+  async save(zipcodes: ZipCode[]): Promise<boolean> {
+    const bulkOps = zipcodes.map((address) => ({
       updateOne: {
         filter: { zipCode: address.code },
         update: {
