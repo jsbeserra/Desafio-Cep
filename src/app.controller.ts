@@ -1,12 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Post } from '@nestjs/common';
+import { ZipCodeService } from './core/zip-code-service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private zipCodeService: ZipCodeService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async list(): Promise<any> {
+    return await this.zipCodeService.list();
+  }
+
+  @Post('/sync')
+  async sync(): Promise<any> {
+    await this.zipCodeService.sync();
   }
 }
