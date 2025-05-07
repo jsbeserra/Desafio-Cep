@@ -106,6 +106,7 @@ export class DriveMongoRepository implements Drive {
             giaCode: item.giaCode,
             areaCode: item.areaCode,
             siafiCode: item.siafiCode,
+            favorite: item.favorite,
           } as ZipCode;
         });
       })
