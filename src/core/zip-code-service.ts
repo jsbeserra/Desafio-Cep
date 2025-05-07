@@ -3,8 +3,9 @@ import { Drive } from './drive';
 import { ZipCode } from './zip-code';
 import { CepGateway } from './zip-code-gateway';
 import { ZipCodesNotFound } from './errors/zip-codes-not-found';
-import { ZipCodeNotUpdated } from './errors/zip-codes-not-updated';
 import { ZipCodeNotFound } from './errors/zip-code-not-found';
+import { ZipCodeNotUpdated } from './errors/zip-codes-not-updated';
+import { ZipCodeFavoritedError } from './errors/zip-codes-favorite';
 
 @Injectable()
 export class ZipCodeService {
@@ -55,5 +56,10 @@ export class ZipCodeService {
     const zipCode = await this.drive.find(zipcode);
     if (!zipCode) throw new BadRequestException(new ZipCodeNotFound(zipcode));
     return zipCode;
+  }
+
+  async favorite(zipcode: string, isFavorite: boolean): Promise<void> {
+    const zipCode = await this.drive.favorite(zipcode, isFavorite);
+    if (!zipCode) throw new BadRequestException(new ZipCodeFavoritedError());
   }
 }

@@ -77,8 +77,15 @@ export class DriveMongoRepository implements Drive {
     return true;
   }
 
-  favorite(zipCode: string, isFavority: boolean): Promise<ZipCode> {
-    throw new Error('Method not implemented.');
+  async favorite(zipCode: string, isFavority: boolean): Promise<boolean> {
+    const updated = await this.ZipCodeModel.updateOne(
+      { zipCode },
+      {
+        favorite: isFavority,
+      },
+    );
+    if (updated.matchedCount === 0) return false;
+    return true;
   }
 
   async listAll(): Promise<ZipCode[]> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { ZipCodeService } from './core/zip-code-service';
 import { ZipCode } from './core/zip-code';
 
@@ -30,5 +30,12 @@ export class AppController {
       body.street,
       body.neighborhood,
     );
+  }
+
+  @Patch()
+  async favorite(
+    @Body() body: { zipcode: string; isFavorite: boolean },
+  ): Promise<any> {
+    await this.zipCodeService.favorite(body.zipcode, body.isFavorite);
   }
 }

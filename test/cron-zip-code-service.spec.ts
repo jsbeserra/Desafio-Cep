@@ -10,6 +10,7 @@ import { CepGateway } from '../src/core/zip-code-gateway';
 import { Drive } from '../src/core/drive';
 import { gatewayMock } from './mocks/gateway-mock';
 import { ZipCodeService } from '../src/core/zip-code-service';
+import { ZipCodeFavoritedError } from '../src/core/errors/zip-codes-favorite';
 
 describe('', () => {
   let app: INestApplication<App>;
@@ -108,5 +109,20 @@ describe('', () => {
 
   it('Should fail return zipcode if not exists in the database', async () => {
     await expect(sut.find('1234')).rejects.toThrow(BadRequestException);
+  });
+
+  it('Should favorite a zip code', async () => {
+    const gateway = jest.spyOn(drive, 'favorite');
+    gateway.mockResolvedValueOnce(true);
+    const result = await sut.favorite(gatewayMock[1].code, true);
+    expect(result).toBeUndefined();
+  });
+
+  it('Should fail to favorite a zip code if none is found in the database', async () => {
+    const gateway = jest.spyOn(drive, 'favorite');
+    gateway.mockResolvedValueOnce(false);
+    await expect(sut.favorite(gatewayMock[1].code, true)).rejects.toThrow(
+      new BadRequestException(new ZipCodeFavoritedError()),
+    );
   });
 });

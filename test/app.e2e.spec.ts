@@ -136,4 +136,36 @@ describe('AppController (e2e)', () => {
     });
     expect(response.status).toBe(400);
   });
+
+  it('/ (PATH) Should favorite a zip code', async () => {
+    jest.spyOn(cepGateway, 'find').mockResolvedValueOnce(gatewayMock);
+    await request(app.getHttpServer()).post('/sync');
+    const response = await request(app.getHttpServer()).patch('/').send({
+      zipcode: gatewayMock[1].code,
+      isFavorite: true,
+    });
+    expect(response.status).toBe(200);
+  });
+
+  it('/ (PATH) Should unfavorite a zip code', async () => {
+    jest.spyOn(cepGateway, 'find').mockResolvedValueOnce(gatewayMock);
+    await request(app.getHttpServer()).post('/sync');
+    await request(app.getHttpServer()).patch('/').send({
+      zipcode: gatewayMock[1].code,
+      isFavorite: true,
+    });
+    const response = await request(app.getHttpServer()).patch('/').send({
+      zipcode: gatewayMock[1].code,
+      isFavorite: false,
+    });
+    expect(response.status).toBe(200);
+  });
+
+  it('/ (PATH) Should fail to favorite a zip code if none is found in the database', async () => {
+    const response = await request(app.getHttpServer()).patch('/').send({
+      zipcode: 'teste',
+      isFavorite: true,
+    });
+    expect(response.status).toBe(400);
+  });
 });
