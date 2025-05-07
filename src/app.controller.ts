@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { ZipCodeService } from './core/zip-code-service';
 
 @Controller()
@@ -13,5 +13,16 @@ export class AppController {
   @Post('/sync')
   async sync(): Promise<any> {
     await this.zipCodeService.sync();
+  }
+
+  @Put()
+  async update(
+    @Body() body: { zipcode: string; street: string; neighborhood: string },
+  ): Promise<any> {
+    await this.zipCodeService.update(
+      body.zipcode,
+      body.street,
+      body.neighborhood,
+    );
   }
 }

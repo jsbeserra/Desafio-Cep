@@ -66,4 +66,20 @@ describe('', () => {
     gateway.mockResolvedValueOnce([]);
     await expect(sut.sync()).rejects.toThrow(BadRequestException);
   });
+
+  it('Should fail to update if no records are found', async () => {
+    const gateway = jest.spyOn(cepGateway, 'find');
+    gateway.mockResolvedValueOnce(gatewayMock);
+    await expect(
+      sut.update('TESTE', 'Rua Do Teste', 'Bairro Do Teste'),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('Should update the neighborhood and street of a zip code', async () => {
+    const gateway = jest.spyOn(cepGateway, 'find');
+    gateway.mockResolvedValueOnce(gatewayMock);
+    await expect(
+      sut.update(gatewayMock[1].code, 'Rua Do Teste', 'Bairro Do Teste'),
+    ).resolves.toBeUndefined();
+  });
 });

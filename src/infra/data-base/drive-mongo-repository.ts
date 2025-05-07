@@ -39,13 +39,23 @@ export class DriveMongoRepository implements Drive {
       .then(() => true)
       .catch(() => false);
   }
-  update(
+
+  async update(
     zipCode: string,
     street: string,
     neighborhood: string,
-  ): Promise<ZipCode> {
-    throw new Error('Method not implemented.');
+  ): Promise<boolean> {
+    const updated = await this.ZipCodeModel.updateOne(
+      { zipCode },
+      {
+        street,
+        neighborhood,
+      },
+    );
+    if (updated.matchedCount === 0) return false;
+    return true;
   }
+
   favorite(zipCode: string, isFavority: boolean): Promise<ZipCode> {
     throw new Error('Method not implemented.');
   }

@@ -71,4 +71,26 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer()).post('/sync');
     expect(response.status).toBe(400);
   });
+
+  it('/ (PUT) Should update a zip code if it exists in the database', async () => {
+    jest.spyOn(cepGateway, 'find').mockResolvedValueOnce(gatewayMock);
+    await request(app.getHttpServer()).post('/sync');
+    const response = await request(app.getHttpServer()).put('/').send({
+      zipcode: gatewayMock[1].code,
+      street: 'Rua Do Teste',
+      neighborhood: 'Bairro Do Teste',
+    });
+    expect(response.status).toBe(200);
+  });
+
+  it('/ (PUT) Should fail update a zip code if it exists not in the database', async () => {
+    jest.spyOn(cepGateway, 'find').mockResolvedValueOnce(gatewayMock);
+    await request(app.getHttpServer()).post('/sync');
+    const response = await request(app.getHttpServer()).put('/').send({
+      zipcode: 'TESTE',
+      street: 'Rua Do Teste',
+      neighborhood: 'Bairro Do Teste',
+    });
+    expect(response.status).toBe(400);
+  });
 });
