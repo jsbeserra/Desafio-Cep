@@ -28,7 +28,7 @@ This project provides integration with the ViaCEP API using NestJS and MongoDB, 
 
 - **NestJS** – TypeScript-based progressive Node.js framework  
 - **MongoDB** – NoSQL database for document-based storage  
-- **Mongoose** – ODM for MongoDB integration  
+- **Mongoose** – ORM for MongoDB integration  
 - **Swagger** – Auto-generated API docs  
 - **Docker Compose** – Simplified container orchestration for multi-container applications  
 - **TypeScript** – JavaScript with strong typing for better developer experience
